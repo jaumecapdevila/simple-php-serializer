@@ -1,15 +1,15 @@
 <?php
 
-namespace SimpleSerializer\Transformers;
+namespace SimpleSerializer\Naming;
 
 
-class CamelCaseTransformer implements PropertyNameTransformer
+class CamelCaseStrategy implements NamingStrategy
 {
     /**
      * @param string $key
      * @return string
      */
-    public function transform(string $key): string
+    public function convert(string $key): string
     {
         return $this->fromSnakeCase($key);
     }

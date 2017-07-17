@@ -3,20 +3,23 @@
 namespace SimpleSerializer;
 
 
-use SimpleSerializer\Transformers\PropertyNameTransformer;
+use Nette\Reflection\ClassType;
+use SimpleSerializer\Naming\CamelCaseStrategy;
+use SimpleSerializer\Naming\NamingStrategy;
+use SimpleSerializer\Naming\SnakeCaseStrategy;
 
 class JsonSerializer implements Serializer
 {
-    /** @var  PropertyNameTransformer */
-    private $transformer;
+    /** @var  NamingStrategy */
+    private $namingStrategy;
 
     /**
      * JsonSerializer constructor.
-     * @param PropertyNameTransformer $transformer
+     * @param NamingStrategy $namingStrategy
      */
-    public function __construct(PropertyNameTransformer $transformer)
+    public function __construct(NamingStrategy $namingStrategy)
     {
-        $this->transformer = $transformer;
+        $this->namingStrategy = $namingStrategy;
     }
 
     public function serialize($rawData)
@@ -33,20 +36,23 @@ class JsonSerializer implements Serializer
     {
         if (is_object($rawData)) {
             $data = [];
-            $reflection = new \ReflectionClass(get_class($rawData));
+            $reflection = new ClassType(get_class($rawData));
             if (!$reflection->isUserDefined()) {
                 throw new \LogicException(sprintf('Class "%s" is not user-defined', $reflection->getName()));
             }
+            if ($reflection->hasAnnotation('Naming\\Strategy')) {
+                $this->resolveNamingStrategy($reflection->getAnnotation('Naming\\Strategy'));
+            }
             foreach ($reflection->getProperties() as $property) {
                 $property->setAccessible(true);
-                $data[$this->transformer->transform($property->getName())] = $this->extractSerializableDataFrom($property->getValue($rawData));
+                $data[$this->namingStrategy->convert($property->getName())] = $this->extractSerializableDataFrom($property->getValue($rawData));
             }
             return $data;
         }
         if (is_array($rawData)) {
             $data = [];
             foreach ($rawData as $key => $element) {
-                $data[$this->transformer->transform($key)] = $this->extractSerializableDataFrom($element);
+                $data[$this->namingStrategy->convert($key)] = $this->extractSerializableDataFrom($element);
             }
             return $data;
         }
@@ -58,5 +64,22 @@ class JsonSerializer implements Serializer
             gettype($rawData),
             var_export($rawData, true)
         ));
+    }
+
+    /**
+     * Change the current property name namingStrategy based on the annotations found in the current object
+     * @param string $namingStrategy
+     * @internal param PropertyNameTransformer $namingStrategy
+     */
+    private function resolveNamingStrategy(string $namingStrategy)
+    {
+        switch ($namingStrategy) {
+            case 'SnakeCase':
+                $namingStrategy = new SnakeCaseStrategy();
+                break;
+            default:
+                $namingStrategy = new CamelCaseStrategy();
+        }
+        $this->namingStrategy = $namingStrategy;
     }
 }

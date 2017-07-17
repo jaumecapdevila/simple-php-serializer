@@ -5,7 +5,7 @@ namespace SimpleSerializer\Test\Unit;
 use PHPUnit\Framework\TestCase;
 use SimpleSerializer\JsonSerializer;
 use SimpleSerializer\Test\Unit\Stub\ObjectStub;
-use SimpleSerializer\Transformers\CamelCaseTransformer;
+use SimpleSerializer\Naming\CamelCaseStrategy;
 
 class JsonSerializerTest extends TestCase
 {
@@ -14,10 +14,10 @@ class JsonSerializerTest extends TestCase
 
     protected function setUp()
     {
-        $this->serializer = new JsonSerializer(new CamelCaseTransformer());
+        $this->serializer = new JsonSerializer(new CamelCaseStrategy());
     }
 
-    public function testItShouldReturnTheSameValueIfScalar(): void
+    public function testItShouldReturnTheSameValueAsStringIfScalar(): void
     {
         $result = $this->serializer->serialize(1);
         $this->assertEquals("1", $result);
@@ -29,10 +29,9 @@ class JsonSerializerTest extends TestCase
         $this->assertEquals("false", $result);
     }
 
-    public function testItShouldReturnAValidJsonIfAValidObjectIsGiven(): void
+    public function testItShouldReturnAValidJsonIfObjectGiven(): void
     {
         $object = new ObjectStub("first property", "second property");
         $result = $this->serializer->serialize($object);
-        var_dump($result);
     }
 }

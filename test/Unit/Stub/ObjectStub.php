@@ -3,6 +3,9 @@
 namespace SimpleSerializer\Test\Unit\Stub;
 
 
+/**
+ * @Naming\Strategy("SnakeCase")
+ */
 class ObjectStub
 {
     private $property_a;

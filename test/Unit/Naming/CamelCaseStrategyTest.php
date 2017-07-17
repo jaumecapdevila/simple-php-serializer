@@ -1,29 +1,29 @@
 <?php
 
-namespace SimpleSerializer\Test\Unit\Transformers;
+namespace SimpleSerializer\Test\Unit\Naming;
 
 use PHPUnit\Framework\TestCase;
-use SimpleSerializer\Transformers\CamelCaseTransformer;
+use SimpleSerializer\Naming\CamelCaseStrategy;
 
-class CamelCaseTransformerTest extends TestCase
+class CamelCaseStrategyTest extends TestCase
 {
-    /** @var  CamelCaseTransformer */
+    /** @var  CamelCaseStrategy */
     private $strategy;
 
     protected function setUp()
     {
-        $this->strategy = new CamelCaseTransformer();
+        $this->strategy = new CamelCaseStrategy();
     }
 
     public function testItShouldReturnAnSnakeCaseString(): void
     {
-        $result = $this->strategy->transform("test_key_key_cool");
+        $result = $this->strategy->convert("test_key_key_cool");
         $this->assertEquals("testKeyKeyCool", $result);
     }
 
     public function testItShouldReturnTheSameWordIfAlreadyInCamelCase(): void
     {
-        $result = $this->strategy->transform("testKeyKeyCool");
+        $result = $this->strategy->convert("testKeyKeyCool");
         $this->assertEquals("testKeyKeyCool", $result);
     }
 }

@@ -1,29 +1,29 @@
 <?php
 
-namespace SimpleSerializer\Test\Unit\Transformers;
+namespace SimpleSerializer\Test\Unit\Naming;
 
 use PHPUnit\Framework\TestCase;
-use SimpleSerializer\Transformers\SnakeCaseTransformer;
+use SimpleSerializer\Naming\SnakeCaseStrategy;
 
-class SnakeCaseTransformerTest extends TestCase
+class SnakeCaseStrategyTest extends TestCase
 {
-    /** @var  SnakeCaseTransformer */
+    /** @var  SnakeCaseStrategy */
     private $strategy;
 
     protected function setUp()
     {
-        $this->strategy = new SnakeCaseTransformer();
+        $this->strategy = new SnakeCaseStrategy();
     }
 
     public function testItShouldReturnAnSnakeCaseString(): void
     {
-        $result = $this->strategy->transform("testKeyKeyCool");
+        $result = $this->strategy->convert("testKeyKeyCool");
         $this->assertEquals("test_key_key_cool", $result);
     }
 
     public function testItShouldReturnTheSameWordIfAlreadyInSnakeCase(): void
     {
-        $result = $this->strategy->transform("test_key_key_cool");
+        $result = $this->strategy->convert("test_key_key_cool");
         $this->assertEquals("test_key_key_cool", $result);
     }
 }
