@@ -1,0 +1,28 @@
+{
+  "name": "jaumecapdevila/simple-serializer",
+  "description": "Simple php serializer",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jaume Capdevila",
+      "email": "contact@jaumecapdevila.net"
+    }
+  ],
+  "require": {
+    "php": "^7.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "SimpleSerializer\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SimpleSerializer\\Test\\": "src/"
+    }
+  }
+}
